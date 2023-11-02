@@ -64,47 +64,51 @@ void loop()
       digitalWrite(Buzina, LOW);  
     }
     else
+    {
       botao = 0;
-
+    }
+    
     if (GamePad.isSquarePressed()) 
-      {
+    {
         //StatusLed = !StatusLed;
         //digitalWrite(Led, StatusLed);          
-      }
+    }
 
-    if (botao && (botao != botaoAnt)) {
+    if (botao && (botao != botaoAnt)) 
+    {
       botao1 = !botao1;
     }
     botaoAnt = botao;
 
-    if (botao1) {
-        //Aciona o freio
+    if (botao1) 
+    {
         digitalWrite(pinIN1, HIGH);
         digitalWrite(pinIN2, HIGH);
         digitalWrite(pinIN3, HIGH);
         digitalWrite(pinIN4, HIGH);
-      }
-    else{
-
+    }
+    else
+    {
       int CALCULO = GamePad.getAngle();
       CALCULO = CALCULO - 270;
 
       if (CALCULO < 0)
-       {
+      {
         CALCULO = CALCULO + 360;
-       }
+      }
 
       int pot2 = CALCULO;
       int pot1 = GamePad.getRadius();
-
 
       if (GamePad.isTrianglePressed()) 
       {
         digitalWrite(Buzina, HIGH);          
       }
       else
+      {
         digitalWrite(Buzina, LOW);
-
+      }
+        
       //LCD
       /*if (GamePad.isCirclePressed()) 
       {
@@ -121,25 +125,27 @@ void loop()
       } 
       else {
           //Direita
-          pDireita  = map(pot2, 180, 360, 100, 0);//330
+          pDireita  = map(pot2, 180, 360, 100, 0);
           pEsquerda = 100; 
           //Serial.print(pot2);  
           //Serial.println();
       }
 
-      if (GamePad.isCrossPressed()) {
+      if (GamePad.isCrossPressed()) 
+      {
           //inverte os motores  
           int velocidade = map(pot1, 0, 7, 0, 255);
 
-          analogWrite(pinIN1, 0);
+          analogWrite(pinIN1, LOW);
           analogWrite(pinIN2, velocidade * pDireita / 100);
       
-          analogWrite(pinIN3, 0);
+          analogWrite(pinIN3, LOW);
           analogWrite(pinIN4, velocidade * pEsquerda / 100); 
       } 
-      else {
+      else 
+      {
         //Sensor Sonico
-         float cmMsec, inMsec;
+         float cmMsec;
          long microsec = ultrasonic.timing();
          cmMsec = ultrasonic.convert(microsec, Ultrasonic::CM);
          //Serial.print("Distancia em cm: ");
@@ -151,17 +157,16 @@ void loop()
             int velocidade = map(pot1, 0, 7, 0, 255);
 
             analogWrite(pinIN1, velocidade * pDireita / 100);
-            analogWrite(pinIN2, 0);
+            analogWrite(pinIN2, LOW);
         
             analogWrite(pinIN3, velocidade * pEsquerda / 100);
-            analogWrite(pinIN4, 0);  
+            analogWrite(pinIN4, LOW);  
           }   
           else{
-            analogWrite(pinIN1, 0);
-            analogWrite(pinIN2, 0);
-        
-            analogWrite(pinIN3, 0);
-            analogWrite(pinIN4, 0);  
+            digitalWrite(pinIN1, HIGH);
+            digitalWrite(pinIN2, HIGH);
+            digitalWrite(pinIN3, HIGH);
+            digitalWrite(pinIN4, HIGH);
           }                 
         }
     }
