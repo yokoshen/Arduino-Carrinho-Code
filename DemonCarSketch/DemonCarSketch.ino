@@ -1,10 +1,10 @@
 #include <Dabble.h>
 
 //Sensor Sonico
-//#include <Ultrasonic.h>
-//#define pino_trigger 11
-//#define pino_echo 8
-//Ultrasonic ultrasonic(pino_trigger, pino_echo);
+#include <Ultrasonic.h>
+#define pino_trigger 11
+#define pino_echo 7 
+Ultrasonic ultrasonic(pino_trigger, pino_echo);
 
 //LCD
 //#include <Wire.h> 
@@ -21,7 +21,7 @@
 #define Buzina 8 
 #define CUSTOM_SETTINGS
 #define INCLUDE_GAMEPAD_MODULE
-#define Led 7
+//#define Led 7
 
 int StatusLed = 0;
 
@@ -38,8 +38,10 @@ void setup() {
   pinMode(pinIN3, OUTPUT);
   pinMode(pinIN4, OUTPUT);
   pinMode(Buzina, OUTPUT);
-  pinMode(Led, OUTPUT);
+  //pinMode(Led, OUTPUT);
   Dabble.begin(9600);
+  //Serial.begin(9600);
+
 
   //LCD
   //lcd.init();          
@@ -66,8 +68,8 @@ void loop()
 
     if (GamePad.isSquarePressed()) 
       {
-        StatusLed = !StatusLed;
-        digitalWrite(Led, StatusLed);          
+        //StatusLed = !StatusLed;
+        //digitalWrite(Led, StatusLed);          
       }
 
     if (botao && (botao != botaoAnt)) {
@@ -84,7 +86,15 @@ void loop()
       }
     else{
 
-      int pot2 = GamePad.getAngle();
+      int CALCULO = GamePad.getAngle();
+      CALCULO = CALCULO - 270;
+
+      if (CALCULO < 0)
+       {
+        CALCULO = CALCULO + 360;
+       }
+
+      int pot2 = CALCULO;
       int pot1 = GamePad.getRadius();
 
 
@@ -102,16 +112,16 @@ void loop()
         lcd.print("IPHONE LIXO");         
       }*/
 
-      if (pot2 <= 165) {
+      if (pot2 <= 180) {
           //Esquerda 
           pDireita  = 100;
-          pEsquerda = map(pot2, 165, 0, 100, 0); 
+          pEsquerda = map(pot2, 180, 0, 100, 0); 
           //Serial.println(pot2);
           //Serial.println();
       } 
       else {
           //Direita
-          pDireita  = map(pot2, 180, 345, 100, 0);
+          pDireita  = map(pot2, 180, 360, 100, 0);//330
           pEsquerda = 100; 
           //Serial.print(pot2);  
           //Serial.println();
@@ -129,23 +139,30 @@ void loop()
       } 
       else {
         //Sensor Sonico
-         //float cmMsec, inMsec;
-         //long microsec = ultrasonic.timing();
-         //cmMsec = ultrasonic.convert(microsec, Ultrasonic::CM);
+         float cmMsec, inMsec;
+         long microsec = ultrasonic.timing();
+         cmMsec = ultrasonic.convert(microsec, Ultrasonic::CM);
          //Serial.print("Distancia em cm: ");
          //Serial.println(cmMsec);
 
           //Para frente
-         // if(cmMsec >= 10)
-          //{
-            int velocidade = map(pot1, 0, 6, 0, 255);
+          if(cmMsec >= 15)
+          {
+            int velocidade = map(pot1, 0, 7, 0, 255);
 
             analogWrite(pinIN1, velocidade * pDireita / 100);
             analogWrite(pinIN2, 0);
         
             analogWrite(pinIN3, velocidade * pEsquerda / 100);
             analogWrite(pinIN4, 0);  
-          //}                    
+          }   
+          else{
+            analogWrite(pinIN1, 0);
+            analogWrite(pinIN2, 0);
+        
+            analogWrite(pinIN3, 0);
+            analogWrite(pinIN4, 0);  
+          }                 
         }
     }
 }
