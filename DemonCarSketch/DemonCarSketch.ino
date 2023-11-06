@@ -21,12 +21,20 @@ Ultrasonic ultrasonic(pino_trigger, pino_echo);
 #define Buzina 8 
 #define CUSTOM_SETTINGS
 #define INCLUDE_GAMEPAD_MODULE
+
+#define SensorGas A0
+
 //#define Led 7
 
 int StatusLed = 0;
 
 int pDireita  = 100;
 int pEsquerda = 100;
+
+boolean SensorON = false;
+boolean botaoAntSensor = HIGH;
+boolean botaoSensor   = HIGH;
+
 
 boolean botaoAnt = HIGH;
 boolean botao    = HIGH;
@@ -38,9 +46,10 @@ void setup() {
   pinMode(pinIN3, OUTPUT);
   pinMode(pinIN4, OUTPUT);
   pinMode(Buzina, OUTPUT);
+  pinMode(SensorGas, INPUT);
   //pinMode(Led, OUTPUT);
   Dabble.begin(9600);
-  //Serial.begin(9600);
+  Serial.begin(9600);
 
 
   //LCD
@@ -115,6 +124,36 @@ void loop()
         lcd.setCursor(3,0);
         lcd.print("IPHONE LIXO");         
       }*/
+
+
+     if (GamePad.isCirclePressed()) 
+     {
+      botaoSensor = 1;     
+      digitalWrite(Buzina, HIGH);  
+      delay(100);
+      digitalWrite(Buzina, LOW);  
+     }
+
+      if (botaoSensor && (botaoSensor != botaoAntSensor)) 
+      {
+        SensorON = !SensorON;
+      }
+      botaoAntSensor = botaoSensor;
+
+      if(SensorON == true)
+      {
+          int AnalogSensorGas = analogRead(SensorGas);
+          Serial.println(AnalogSensorGas);
+          if (AnalogSensorGas > 400)
+          {
+            digitalWrite(Buzina, HIGH);          
+          }
+          else
+          {
+            digitalWrite(Buzina, LOW);
+          }
+      }
+  
 
       if (pot2 <= 180) {
           //Esquerda 
