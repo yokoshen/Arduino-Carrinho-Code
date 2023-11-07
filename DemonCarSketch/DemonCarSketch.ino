@@ -2,6 +2,10 @@
 
 //Sensor Sonico
 #include <Ultrasonic.h>
+
+//baixe e instale a biblioteca 
+//https://github.com/MakerHero/Ultrasonic
+
 #define pino_trigger 11
 #define pino_echo 7 
 Ultrasonic ultrasonic(pino_trigger, pino_echo);
@@ -49,7 +53,7 @@ void setup() {
   pinMode(SensorGas, INPUT);
   //pinMode(Led, OUTPUT);
   Dabble.begin(9600);
-  Serial.begin(9600);
+  //Serial.begin(9600);
 
 
   //LCD
@@ -111,11 +115,7 @@ void loop()
 
       if (GamePad.isTrianglePressed()) 
       {
-        digitalWrite(Buzina, HIGH);          
-      }
-      else
-      {
-        digitalWrite(Buzina, LOW);
+        tone(Buzina, 3000, 100);          
       }
         
       //LCD
@@ -129,9 +129,12 @@ void loop()
      if (GamePad.isCirclePressed()) 
      {
       botaoSensor = 1;     
-      digitalWrite(Buzina, HIGH);  
-      delay(100);
-      digitalWrite(Buzina, LOW);  
+      tone(Buzina, 3000, 500);    
+     }
+     
+     else
+     {
+      botaoSensor = 0;
      }
 
       if (botaoSensor && (botaoSensor != botaoAntSensor)) 
@@ -143,14 +146,10 @@ void loop()
       if(SensorON == true)
       {
           int AnalogSensorGas = analogRead(SensorGas);
-          Serial.println(AnalogSensorGas);
-          if (AnalogSensorGas > 400)
+          //Serial.println(AnalogSensorGas);
+          if (AnalogSensorGas > 60)
           {
-            digitalWrite(Buzina, HIGH);          
-          }
-          else
-          {
-            digitalWrite(Buzina, LOW);
+            tone(Buzina, 3000, 100);          
           }
       }
   
@@ -191,8 +190,14 @@ void loop()
          //Serial.println(cmMsec);
 
           //Para frente
-          if(cmMsec >= 15)
+          if(cmMsec < 25)
           {
+            digitalWrite(pinIN1, HIGH);
+            digitalWrite(pinIN2, HIGH);
+            digitalWrite(pinIN3, HIGH);
+            digitalWrite(pinIN4, HIGH);
+          }   
+          else{
             int velocidade = map(pot1, 0, 7, 0, 255);
 
             analogWrite(pinIN1, velocidade * pDireita / 100);
@@ -200,13 +205,7 @@ void loop()
         
             analogWrite(pinIN3, velocidade * pEsquerda / 100);
             analogWrite(pinIN4, LOW);  
-          }   
-          else{
-            digitalWrite(pinIN1, HIGH);
-            digitalWrite(pinIN2, HIGH);
-            digitalWrite(pinIN3, HIGH);
-            digitalWrite(pinIN4, HIGH);
           }                 
-        }
-    }
+      }
+  }
 }
