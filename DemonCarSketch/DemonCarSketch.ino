@@ -126,16 +126,15 @@ void loop()
       }*/
 
 
-     if (GamePad.isCirclePressed()) 
-     {
-      botaoSensor = 1;     
-      tone(Buzina, 3000, 500);    
-     }
-     
-     else
-     {
-      botaoSensor = 0;
-     }
+      if (GamePad.isCirclePressed()) 
+      {
+        botaoSensor = 1;     
+        tone(Buzina, 3000, 500);    
+      }
+      else
+      {
+        botaoSensor = 0;
+      }
 
       if (botaoSensor && (botaoSensor != botaoAntSensor)) 
       {
@@ -207,5 +206,5 @@ void loop()
             analogWrite(pinIN4, LOW);  
           }                 
       }
-  }
+    }
 }
